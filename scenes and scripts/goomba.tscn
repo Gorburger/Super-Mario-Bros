@@ -1,0 +1,76 @@
+[gd_scene load_steps=10 format=3 uid="uid://mtkb3mplsxvi"]
+
+[ext_resource type="Script" uid="uid://bt2fbjm16cgrm" path="res://scenes and scripts/goomba.gd" id="1_kx850"]
+[ext_resource type="Texture2D" uid="uid://b3m045q58swdl" path="res://textures/gooba1.png" id="2_6w6tw"]
+[ext_resource type="Texture2D" uid="uid://bstaij6ma12tl" path="res://textures/gooba_death.png" id="2_dcjp3"]
+[ext_resource type="Texture2D" uid="uid://bivckyuh58ajr" path="res://textures/gooba2.png" id="3_6tq7j"]
+[ext_resource type="Texture2D" uid="uid://dqw86ytk0l48g" path="res://textures/gooba3.png" id="4_sdmyq"]
+[ext_resource type="Texture2D" uid="uid://b6irkfk5smqoj" path="res://textures/gooba4.png" id="5_5sd6n"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_4vgc7"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_dcjp3")
+}],
+"loop": false,
+"name": &"death",
+"speed": 0.75
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_6w6tw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_6tq7j")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_sdmyq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_5sd6n")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 8.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yo3co"]
+size = Vector2(15, 9.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xypq2"]
+size = Vector2(15, 5.5)
+
+[node name="goomba" type="CharacterBody2D"]
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("1_kx850")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_4vgc7")
+animation = &"death"
+autoplay = "walk"
+
+[node name="RayCast2D" type="RayCast2D" parent="."]
+position = Vector2(-8, 7)
+target_position = Vector2(0, 16)
+
+[node name="collision_detector" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 7
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="collision_detector"]
+position = Vector2(0, 2.75)
+shape = SubResource("RectangleShape2D_yo3co")
+
+[node name="hit_detector" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hit_detector"]
+position = Vector2(0, -4.75)
+shape = SubResource("RectangleShape2D_xypq2")
+
+[connection signal="animation_finished" from="AnimatedSprite2D" to="." method="_on_animation_finished"]
+[connection signal="body_entered" from="collision_detector" to="." method="collision_detected"]
+[connection signal="body_entered" from="hit_detector" to="." method="hit_detected"]

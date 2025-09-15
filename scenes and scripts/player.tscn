@@ -1,0 +1,145 @@
+[gd_scene load_steps=21 format=3 uid="uid://bw6spaan0ak0k"]
+
+[ext_resource type="Script" uid="uid://do1nn1fjgnr8e" path="res://scenes and scripts/player.gd" id="1_gi768"]
+[ext_resource type="Texture2D" uid="uid://dhyd5lk6fc536" path="res://textures/cowboy-walk1.png" id="2_us53x"]
+[ext_resource type="Texture2D" uid="uid://dw84jbwgjxmhh" path="res://textures/cowboy-jump.png" id="3_3la8w"]
+[ext_resource type="Texture2D" uid="uid://78kj0nsbnf2f" path="res://textures/cowboy-walk2.png" id="3_g1kjx"]
+[ext_resource type="Texture2D" uid="uid://bipbsypaf8ibv" path="res://textures/super_cowboy-walk1.png" id="4_c5r31"]
+[ext_resource type="Texture2D" uid="uid://kmndda5s5qnt" path="res://textures/cowboy-walk3.png" id="4_d8wtw"]
+[ext_resource type="Texture2D" uid="uid://bc3gfvqycgmje" path="res://textures/super_cowboy-jump1.png" id="5_adjyd"]
+[ext_resource type="Texture2D" uid="uid://bitdcs4k6hn4y" path="res://textures/cowboy-walk4.png" id="5_yyn45"]
+[ext_resource type="Texture2D" uid="uid://cjvm0d3qtitkm" path="res://textures/super_cowboy-walk2.png" id="6_73a4n"]
+[ext_resource type="Texture2D" uid="uid://dnynsi42dby73" path="res://textures/super_cowboy-walk3.png" id="7_xd2ck"]
+[ext_resource type="Texture2D" uid="uid://b3mw074komtks" path="res://textures/super_cowboy-walk4.png" id="8_7vhuc"]
+[ext_resource type="AudioStream" uid="uid://dxji7qrjdxalq" path="res://audio/pickupCoin.wav" id="12_adjyd"]
+[ext_resource type="AudioStream" uid="uid://dhkrr8rqme6yo" path="res://audio/powerUp.wav" id="13_73a4n"]
+[ext_resource type="AudioStream" uid="uid://qhyiijovmp2f" path="res://audio/hitHurt.wav" id="14_xd2ck"]
+[ext_resource type="AudioStream" uid="uid://5iqye32sjfdn" path="res://audio/jump.wav" id="15_7vhuc"]
+[ext_resource type="AudioStream" uid="uid://bov2aiee6an87" path="res://audio/tone.wav" id="16_t2hqo"]
+[ext_resource type="AudioStream" uid="uid://dps2lgwk5jgmb" path="res://audio/laserShoot.wav" id="17_r8b1s"]
+[ext_resource type="AudioStream" uid="uid://brkkl6g0gkxkk" path="res://audio/explosion.wav" id="18_jjkw2"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ped3y"]
+size = Vector2(15, 21)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_vfay1"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_us53x")
+}],
+"loop": true,
+"name": &"default",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_3la8w")
+}],
+"loop": true,
+"name": &"jump",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_c5r31")
+}],
+"loop": true,
+"name": &"super_default",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_adjyd")
+}],
+"loop": true,
+"name": &"super_jump",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_c5r31")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_73a4n")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_xd2ck")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_7vhuc")
+}],
+"loop": false,
+"name": &"super_walk",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_us53x")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_g1kjx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_d8wtw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_yyn45")
+}],
+"loop": false,
+"name": &"walk",
+"speed": 8.0
+}]
+
+[node name="player" type="CharacterBody2D" groups=["Player"]]
+position = Vector2(1, -1)
+collision_layer = 2
+collision_mask = 9
+script = ExtResource("1_gi768")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-0.5, 0.5)
+shape = SubResource("RectangleShape2D_ped3y")
+
+[node name="Sprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_vfay1")
+animation = &"walk"
+
+[node name="fireball_marker" type="Node2D" parent="."]
+position = Vector2(16, 2)
+
+[node name="GroundDetector" type="RayCast2D" parent="."]
+position = Vector2(-0.5, 11)
+target_position = Vector2(0, 70)
+
+[node name="CoinSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("12_adjyd")
+max_polyphony = 4
+
+[node name="PowerUpSound" type="AudioStreamPlayer2D" parent="."]
+process_mode = 3
+stream = ExtResource("13_73a4n")
+volume_db = -8.0
+
+[node name="EnemyDeathSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("14_xd2ck")
+volume_db = -10.0
+max_polyphony = 4
+
+[node name="JumpSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("15_7vhuc")
+volume_db = -10.0
+
+[node name="WarpSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("16_t2hqo")
+
+[node name="FireballSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("17_r8b1s")
+max_polyphony = 2
+
+[node name="HitSound" type="AudioStreamPlayer2D" parent="."]
+process_mode = 3
+stream = ExtResource("18_jjkw2")
+
+[connection signal="finished" from="PowerUpSound" to="." method="_on_power_up_sound_finished"]
+[connection signal="finished" from="HitSound" to="." method="_on_hit_sound_finished"]

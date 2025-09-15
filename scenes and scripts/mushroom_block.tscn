@@ -1,0 +1,91 @@
+[gd_scene load_steps=11 format=3 uid="uid://5nchytfcxlje"]
+
+[ext_resource type="Texture2D" uid="uid://bcex200swnp1p" path="res://textures/block.png" id="1_m0v1m"]
+[ext_resource type="Texture2D" uid="uid://cp33xoddkooay" path="res://textures/block2.png" id="2_j3jgf"]
+[ext_resource type="Texture2D" uid="uid://bd4fsd81k4oc6" path="res://textures/block-picked1.png" id="3_ws1yx"]
+[ext_resource type="Texture2D" uid="uid://cnnrcwhsckhtm" path="res://textures/block-picked2.png" id="4_yg6gf"]
+[ext_resource type="Texture2D" uid="uid://b2a8ewln6hiyi" path="res://textures/block-picked3.png" id="5_a5xqw"]
+[ext_resource type="Texture2D" uid="uid://dm3gm1pbo3lgw" path="res://textures/block-picked4.png" id="6_s5dg0"]
+
+[sub_resource type="GDScript" id="GDScript_hsu6e"]
+script/source = "extends StaticBody2D
+
+@onready var sprite: AnimatedSprite2D = $Sprite2D
+
+var picked: bool = false
+var mushroom_scene = preload(\"res://scenes and scripts/mushroom.tscn\")
+func _on_area_2d_body_entered(body: Node2D) -> void:
+	if not picked:
+		picked = true
+		sprite.play(\"picked\")
+		var mushroom = mushroom_scene.instantiate()
+		get_tree().current_scene.call_deferred(\"add_child\", mushroom)
+		mushroom.position = position + Vector2(0, -16)
+		if body.sprite.flip_h == true:
+			mushroom.direction = -1
+		
+	
+"
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_pamxj"]
+animations = [{
+"frames": [{
+"duration": 2.0,
+"texture": ExtResource("1_m0v1m")
+}, {
+"duration": 1.5,
+"texture": ExtResource("2_j3jgf")
+}],
+"loop": true,
+"name": &"blink",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 0.5,
+"texture": ExtResource("3_ws1yx")
+}, {
+"duration": 0.25,
+"texture": ExtResource("4_yg6gf")
+}, {
+"duration": 0.3,
+"texture": ExtResource("5_a5xqw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_s5dg0")
+}],
+"loop": false,
+"name": &"picked",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3xm3j"]
+size = Vector2(16, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_l88fu"]
+size = Vector2(15, 1)
+
+[node name="MushroomBlock" type="StaticBody2D"]
+collision_mask = 0
+script = SubResource("GDScript_hsu6e")
+
+[node name="Sprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_pamxj")
+animation = &"picked"
+autoplay = "blink"
+frame = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_3xm3j")
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(0, 8.5)
+shape = SubResource("RectangleShape2D_l88fu")
+
+[node name="Node2D" type="Node2D" parent="."]
+position = Vector2(0, -14)
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
